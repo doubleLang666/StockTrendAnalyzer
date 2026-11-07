@@ -186,20 +186,22 @@ F:\毕业设计\.venv\Scripts\python.exe tools\check_import.py data\399006.txt
 
 ## 打包为可执行程序（PyInstaller）
 
-```powershell
-cd F:\毕业设计\StockTrendAnalyzer
-pwsh -File tools\build_exe.ps1          # 增量打包
-pwsh -File tools\build_exe.ps1 -Clean   # 清理后重新打包
-```
+提供两种打包方式，按用途选择：
+
+| 方式 | 命令 | 输出 | 适用场景 |
+|---|---|---|---|
+| 目录版 | `pwsh -File tools\build_exe.ps1` | `dist\StockTrendAnalyzer\`（约 200 MB） | 自己用，启动快 |
+| 单文件版 | `pwsh -File tools\build_exe.ps1 -OneFile` | `dist-onefile\StockTrendAnalyzer.exe`（约 86 MB） | **发给别人**，只有一个文件 |
 
 等价于直接调用 PyInstaller：
 
 ```powershell
 cd F:\毕业设计\StockTrendAnalyzer
-F:\毕业设计\.venv\Scripts\python.exe -m PyInstaller StockTrendAnalyzer.spec --noconfirm
+F:\毕业设计\.venv\Scripts\python.exe -m PyInstaller StockTrendAnalyzer.spec --noconfirm          # 目录版
+F:\毕业设计\.venv\Scripts\python.exe -m PyInstaller StockTrendAnalyzer-onefile.spec --noconfirm   # 单文件版
 ```
 
-输出 `dist\StockTrendAnalyzer\`（单目录模式，约 200 MB）：
+目录版输出结构（单目录模式，约 200 MB）：
 
 ```
 dist\StockTrendAnalyzer\
@@ -221,6 +223,11 @@ dist\StockTrendAnalyzer\
   指向 exe 旁 `.cache\matplotlib`，否则在只读的解包目录里会报无法写缓存。
 - **自检**：`StockTrendAnalyzer.exe --self-test` 会构建主窗口、导入 `data\` 下的行情文件，
   把结果写入 `self_test_report.json` 后退出（退出码 0 表示正常）。
+- **不要从压缩软件的临时目录直接运行**：360 压缩等工具双击压缩包内的 exe 时会先解压到
+  `%TEMP%\360zip$Temp\360$1\...` 预览目录，`_internal` 往往没有完整解压出来，于是报
+  `FileNotFoundError: ...\_internal\base_library.zip`（这是 PyInstaller 引导程序在 Python 启动前报的错，
+  程序内部无法捕获）。解决方式二选一：① 先"解压到当前文件夹"再双击；
+  ② 直接发**单文件版** `StockTrendAnalyzer.exe`（自解压，不依赖 `_internal` 目录）。
 
 ## 数据与结果如何保存
 

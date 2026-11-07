@@ -29,6 +29,10 @@
 
 六、常见问题
     * 若提示缺少 DLL 或启动失败，请把整个 StockTrendAnalyzer 文件夹一起拷贝，不要只拷 exe；
+    * 若报 "FileNotFoundError: ... _internal\base_library.zip"，说明程序是在压缩软件的
+      临时预览目录里直接运行的（例如 360 压缩的 360zip$Temp），依赖文件并没有真正解压出来。
+      正确做法：先用压缩软件"解压到当前文件夹"，再双击解压出来的 StockTrendAnalyzer.exe；
+      也可以改用"单文件版"（整个程序只有一个 StockTrendAnalyzer.exe）；
     * 若程序放在 C:\Program Files 等只读目录，config.json 可能无法保存，
       建议放在普通文件夹或桌面运行；
     * 首次启动 Matplotlib 会建立字体缓存（.cache\matplotlib），属正常现象。
