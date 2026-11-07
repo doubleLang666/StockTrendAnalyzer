@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.venv/
+
+# 用户数据与生成物
+data/*
+!data/.gitkeep
+exports/
+.cache/
+self_test_report.json
+*.log

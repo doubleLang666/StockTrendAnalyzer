@@ -1,0 +1,74 @@
+{
+  "app": {
+    "name": "特定时间范围内的股票趋势共性分析系统",
+    "version": "0.1.0",
+    "window": {
+      "width": 1280,
+      "height": 820,
+      "remember_geometry": true
+    }
+  },
+  "import": {
+    "encodings": [
+      "utf-8-sig",
+      "utf-8",
+      "gb18030",
+      "gbk",
+      "big5"
+    ],
+    "delimiters": [
+      ",",
+      "\t",
+      ";",
+      "|"
+    ],
+    "date_formats": [
+      "%Y-%m-%d",
+      "%Y/%m/%d",
+      "%Y%m%d",
+      "%Y.%m.%d",
+      "%Y-%m-%d %H:%M:%S",
+      "%Y/%m/%d %H:%M:%S"
+    ],
+    "missing_tokens": [
+      "",
+      "-",
+      "--",
+      "---",
+      "nan",
+      "none",
+      "null",
+      "n/a",
+      "na"
+    ],
+    "header_scan_rows": 10,
+    "restore_recent": true,
+    "recent_files": []
+  },
+  "processing": {
+    "default_normalization": "none",
+    "default_alignment": "real_date",
+    "default_data_kind": "absolute",
+    "min_max_range": [
+      0.0,
+      1.0
+    ]
+  },
+  "similarity": {
+    "algorithm": "pearson",
+    "normalize": true,
+    "top_n": 3,
+    "min_valid_points": 5,
+    "max_overlap_ratio": 0.5
+  },
+  "plotting": {
+    "figure_dpi": 100,
+    "line_width": 1.6,
+    "max_curves": 8,
+    "font_families": [
+      "Microsoft YaHei",
+      "SimHei",
+      "DejaVu Sans"
+    ]
+  }
+}
