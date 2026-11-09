@@ -43,7 +43,9 @@
     ],
     "header_scan_rows": 10,
     "restore_recent": true,
-    "recent_files": []
+    "recent_files": [
+      "F:\\毕业设计\\StockTrendAnalyzer\\data\\399006.txt"
+    ]
   },
   "processing": {
     "default_normalization": "none",
@@ -70,5 +72,36 @@
       "SimHei",
       "DejaVu Sans"
     ]
-  }
+  },
+  "chart": {
+    "type": "line",
+    "ma_windows": [
+      5,
+      10,
+      20
+    ],
+    "volume_ma_windows": [
+      5,
+      10
+    ],
+    "show_volume": true,
+    "show_macd": true,
+    "show_rsi": false,
+    "show_boll": false,
+    "rsi_windows": [
+      6,
+      12,
+      24
+    ],
+    "macd_params": [
+      12,
+      26,
+      9
+    ],
+    "boll_window": 20,
+    "boll_k": 2.0,
+    "initial_bars": 240,
+    "theme": "dark"
+  },
+  "last_open_dir": "F:\\毕业设计\\StockTrendAnalyzer\\data"
 }

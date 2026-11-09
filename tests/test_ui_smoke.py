@@ -32,23 +32,26 @@ def _state_texts(window: MainWindow) -> list[str]:
     return texts
 
 
-def test_main_window_builds_four_tabs(qapp, tmp_path: Path) -> None:
+def test_main_window_builds_five_tabs(qapp, tmp_path: Path) -> None:
     config = AppConfig.load(tmp_path / "config.json")
     window = MainWindow(config, ServiceRegistry())
 
     assert window.windowTitle().startswith(APP_NAME)
-    assert window.tabs.count() == 4
-    assert [window.tabs.tabText(i) for i in range(4)] == [
+    assert window.tabs.count() == 5
+    assert [window.tabs.tabText(i) for i in range(5)] == [
         "数据导入",
         "数据处理",
         "趋势分析",
         "相似度分析",
+        "多指标分析",
     ]
 
     states = _state_texts(window)
-    assert len(states) == 4
-    assert all("尚未接入" in text for text in states)
+    assert len(states) == 5
+    assert all("尚未接入" in text for text in states[:4])
     assert "第二阶段实现" in states[0]
+    # 多指标分析页不依赖注册表，始终是真实控件
+    assert states[4] == ""
 
     window.close()
     assert (tmp_path / "config.json").exists()  # 关闭时保存窗口尺寸
@@ -63,7 +66,7 @@ def test_import_page_replaces_placeholder(qapp, tmp_path: Path) -> None:
     assert isinstance(first, ImportPage)
     states = _state_texts(window)
     assert states[0] == ""  # 导入页不再有占位提示
-    assert all("尚未接入" in text for text in states[1:])
+    assert all("尚未接入" in text for text in states[1:4])
     window.close()
 
 
@@ -107,6 +110,7 @@ def test_build_registry_registers_importer(qapp, tmp_path: Path) -> None:
 
 def test_all_pages_use_real_widgets_when_registered(qapp, tmp_path: Path) -> None:
     from app.application import build_registry
+    from ui.multi_indicator_page import MultiIndicatorPage
     from ui.processing_page import ProcessingPage
     from ui.similarity_page import SimilarityPage
     from ui.trend_page import TrendPage
@@ -117,4 +121,5 @@ def test_all_pages_use_real_widgets_when_registered(qapp, tmp_path: Path) -> Non
     assert isinstance(window.tabs.widget(1), ProcessingPage)
     assert isinstance(window.tabs.widget(2), TrendPage)
     assert isinstance(window.tabs.widget(3), SimilarityPage)
+    assert isinstance(window.tabs.widget(4), MultiIndicatorPage)
     window.close()

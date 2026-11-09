@@ -24,6 +24,7 @@ from app.config import AppConfig
 from app.service_registry import ServiceRegistry
 from core.constants import APP_NAME, APP_VERSION
 from ui.import_page import ImportPage
+from ui.multi_indicator_page import MultiIndicatorPage
 from ui.processing_page import ProcessingPage
 from ui.similarity_page import SimilarityPage
 from ui.trend_page import TrendPage
@@ -108,6 +109,13 @@ class MainWindow(QMainWindow):
             "similarity",
             "第五阶段实现",
         ),
+        (
+            "多指标分析",
+            "把价格、成交量、换手率、涨跌幅等多个指标放在同一套 0–100 评分体系里"
+            "做联动分析：逐指标计算 Pearson/RMSE/MAE，按权重合成综合相似度。",
+            "multi",
+            "第六阶段实现",
+        ),
     )
 
     def __init__(
@@ -174,6 +182,7 @@ class MainWindow(QMainWindow):
         self._processing_page: ProcessingPage | None = None
         self._trend_page: TrendPage | None = None
         self._similarity_page: SimilarityPage | None = None
+        self._multi_page: MultiIndicatorPage | None = None
 
         for title, body, service_name, stage in self.PAGE_SPECS:
             if service_name == "importer":
@@ -207,6 +216,7 @@ class MainWindow(QMainWindow):
                         lambda: self._registry.try_get("similarity"),
                         self,
                         exporter=self._registry.try_get("exporter"),
+                        config=self._config,
                     )
                     page.plotted.connect(self._on_plotted)
                     self._trend_page = page
@@ -226,6 +236,16 @@ class MainWindow(QMainWindow):
                     self._similarity_page = page
                     self._tabs.addTab(page, title)
                     continue
+            elif service_name == "multi":
+                page = MultiIndicatorPage(
+                    self._imported_datasets,
+                    lambda: self._registry.try_get("similarity"),
+                    self,
+                    config=self._config,
+                )
+                self._multi_page = page
+                self._tabs.addTab(page, title)
+                continue
 
             available = self._registry.is_available(service_name)
             state = (
@@ -279,6 +299,8 @@ class MainWindow(QMainWindow):
             self._trend_page.refresh()
         if self._similarity_page is not None:
             self._similarity_page.refresh()
+        if self._multi_page is not None:
+            self._multi_page.refresh()
         if not results:
             self.statusBar().showMessage("已清空导入数据", 5000)
             return

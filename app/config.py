@@ -65,6 +65,21 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "max_curves": 8,
         "font_families": ["Microsoft YaHei", "SimHei", "DejaVu Sans"],
     },
+    "chart": {
+        "type": "line",
+        "ma_windows": [5, 10, 20],
+        "volume_ma_windows": [5, 10],
+        "show_volume": True,
+        "show_macd": True,
+        "show_rsi": False,
+        "show_boll": False,
+        "rsi_windows": [6, 12, 24],
+        "macd_params": [12, 26, 9],
+        "boll_window": 20,
+        "boll_k": 2.0,
+        "initial_bars": 240,
+        "theme": "dark",
+    },
 }
 
 
