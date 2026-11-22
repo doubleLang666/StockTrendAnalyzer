@@ -1,7 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
 """PyInstaller 打包配置（单目录模式）。
 
-用法（在项目根目录 F:\\毕业设计\\StockTrendAnalyzer 下执行）：
+用法（在本目录 StockTrendAnalyzer 下执行）：
     ..\\.venv\\Scripts\\python.exe -m PyInstaller StockTrendAnalyzer.spec --noconfirm
 
 输出：dist\\StockTrendAnalyzer\\

@@ -1,5 +1,7 @@
 # 特定时间范围内的股票趋势共性分析系统
 
+当前版本 **v0.3.0**：版本规则、历史与免责声明见 [版本声明.md](版本声明.md)。
+
 基于历史行情数据的 Python 桌面分析软件：导入券商导出的 TXT 行情文件，
 对不同时间范围的行情曲线做归一化、对齐、可视化与相似度检索。
 
@@ -9,8 +11,8 @@
 ## 目录结构
 
 ```
-F:\毕业设计\
-├── .venv\                     Python 3.14 虚拟环境（已配置）
+<仓库根>\
+├── .venv\                     Python 3.14 虚拟环境（本地创建，不入库）
 ├── requirements.txt           依赖清单
 ├── requirements-lock.txt      冻结版本
 └── StockTrendAnalyzer\        源码根目录
@@ -18,10 +20,13 @@ F:\毕业设计\
     ├── StockTrendAnalyzer.spec PyInstaller 打包配置
     ├── config.json            运行配置（首次运行复制到 exe 旁）
     ├── pytest.ini             测试配置
+    ├── 版本声明.md             版本规则、版本历史、许可与免责声明
     ├── app\                   应用协调层（配置、路径、服务注册表、装配）
     ├── core\                  核心层（数据模型、接口、常量、异常）
     ├── modules\               业务模块层（导入/处理/趋势/相似度/导出）
-    ├── ui\                    界面层
+    │   ├── charting\          专业行情图表（K 线、成交量、均线与技术指标、交互、对比）
+    │   └── multi_indicator\   多指标联动分析（指标选择、标准化、评分、可视化、检索）
+    ├── ui\                    界面层（含 multi_indicator_page.py）
     ├── tests\                 pytest 测试
     ├── packaging\             打包用版本信息
     ├── tools\                 开发辅助脚本（自检、截图、图标、打包）
@@ -51,20 +56,22 @@ F:\毕业设计\
 ## 运行
 
 ```powershell
-F:\毕业设计\.venv\Scripts\python.exe F:\毕业设计\StockTrendAnalyzer\main.py
+cd StockTrendAnalyzer
+..\.venv\Scripts\python.exe main.py
 ```
 
 自检（无界面构建主窗口后退出，用于验证依赖是否齐全）：
 
 ```powershell
-F:\毕业设计\.venv\Scripts\python.exe F:\毕业设计\StockTrendAnalyzer\main.py --self-test
+cd StockTrendAnalyzer
+..\.venv\Scripts\python.exe main.py --self-test
 ```
 
 ## 测试
 
 ```powershell
-cd F:\毕业设计\StockTrendAnalyzer
-F:\毕业设计\.venv\Scripts\python.exe -m pytest
+cd StockTrendAnalyzer
+..\.venv\Scripts\python.exe -m pytest
 ```
 
 GUI 测试通过 `QT_QPA_PLATFORM=offscreen` 在无窗口模式下运行（见 `tests/conftest.py`）。
@@ -94,8 +101,8 @@ GUI 测试通过 `QT_QPA_PLATFORM=offscreen` 在无窗口模式下运行（见 `
 命令行自检（不启动界面）：
 
 ```powershell
-cd F:\毕业设计\StockTrendAnalyzer
-F:\毕业设计\.venv\Scripts\python.exe tools\check_import.py data\399006.txt
+cd StockTrendAnalyzer
+..\.venv\Scripts\python.exe tools\check_import.py data\399006.txt
 ```
 
 ## 数据处理（第三阶段已完成）
@@ -163,6 +170,33 @@ F:\毕业设计\.venv\Scripts\python.exe tools\check_import.py data\399006.txt
 3. 点击"计算相似度"后，表格列出五种算法的原始值、有效点数与状态说明，图中同时绘制两条归一化曲线；
 4. 点击"导出结果…（CSV）"可把整张对比表（含算法、原始值、有效点、状态与说明）导出。
 
+## 专业图表（第七阶段已完成，v0.2.0）
+
+图表模块位于 `modules/charting/`，与折线图并存：在趋势页的"图表类型"下拉里切换。
+
+- **K 线**：按开盘/最高/最低/收盘绘制蜡烛，红涨绿跌，十字星保留最小可见实体，上下影线独立绘制；
+  只接受真实交易日期索引与未归一化价格，归一化数据会明确拒绝画 K 线。
+- **副图**：成交量（含 VOL_MA5/10）、MACD(12,26,9)、RSI(6,12,24)、BOLL(20,2)，均可独立开关；
+  成交量字段缺失时自动隐藏副图并提示，不伪造数据。
+- **交互**：十字光标贯穿所有面板（主图显示日期/开高低收/涨跌幅/成交量）、滚轮 1.4 倍锚点缩放、
+  拖动平移、放大/缩小/恢复默认/显示全部四个按钮；缩放平移只重绘可视区图元，不改原始数据。
+- **对比**：模式 A 双图并排（按第 N 根对齐）、模式 B 归一化走势对比（首值 = 100，界面注明非真实价格）。
+- **检索联动**：点击相似区间结果后自动定位并高亮对应 K 线区间，主副图同步。
+- **性能**：3990 根 K 线全量构建约 180–210 ms（蜡烛与成交量柱各用单个 PolyCollection，不用逐柱 `ax.bar`）。
+
+## 多指标联动分析（第八阶段已完成，v0.3.0）
+
+新页签「多指标分析」位于主窗口第 5 项，模块位于 `modules/multi_indicator/`。
+
+1. 选择数据源与目标/对比区间，勾选指标（开盘价、收盘价、最高价、最低价、成交量、换手率、涨跌幅）；
+   缺失字段置灰并说明原因，默认勾选收盘价、成交量、换手率、涨跌幅。
+2. 每个指标独立计算 Pearson / RMSE / MAE，并换算为 0–100 分：`(r+1)/2×100`、`100/(1+NRMSE)`、`100/(1+NMAE)`；
+   误差统一除以两段合并标准差，不同量纲的指标因此可直接比较。
+3. 权重可逐项调整、合计提示、一键恢复默认；无效指标不按 0 分参与，按有效指标重新归一化并显示实际权重。
+4. 综合相似度给出分级（≥90 高度、≥80 较高、≥65 中等、≥50 一般），并提供归一化叠加图、单指标独立子图与指标雷达图。
+5. 「历史检索」只用目标区间之前的数据（防数据泄漏），按综合分排序并自动去除相邻重叠窗口，
+   双击结果回填明细与图表。
+
 ## 结果导出（第六阶段已完成）
 
 **导出模块（`modules/export`）**
@@ -196,9 +230,9 @@ F:\毕业设计\.venv\Scripts\python.exe tools\check_import.py data\399006.txt
 等价于直接调用 PyInstaller：
 
 ```powershell
-cd F:\毕业设计\StockTrendAnalyzer
-F:\毕业设计\.venv\Scripts\python.exe -m PyInstaller StockTrendAnalyzer.spec --noconfirm          # 目录版
-F:\毕业设计\.venv\Scripts\python.exe -m PyInstaller StockTrendAnalyzer-onefile.spec --noconfirm   # 单文件版
+cd StockTrendAnalyzer
+..\.venv\Scripts\python.exe -m PyInstaller StockTrendAnalyzer.spec --noconfirm          # 目录版
+..\.venv\Scripts\python.exe -m PyInstaller StockTrendAnalyzer-onefile.spec --noconfirm   # 单文件版
 ```
 
 目录版输出结构（单目录模式，约 200 MB）：
@@ -255,13 +289,15 @@ dist\StockTrendAnalyzer\
 | 四 | 单/多曲线绘制、多周期比较、真实日期与相对交易日对齐 | ✅ 已完成 |
 | 五 | Pearson/RMSE/MAE、滑动窗口检索、Top N 排序 | ✅ 已完成 |
 | 六 | DTW、余弦相似度、结果导出（CSV） | ✅ 已完成 |
+| 七 | 专业行情图表：K 线、成交量、MA/MACD/RSI/BOLL、十字光标与缩放平移、双图并排与归一化对比、检索区间高亮 | ✅ 已完成（v0.2.0） |
+| 八 | 多指标联动分析：七类指标、0–100 评分体系、权重归一化、雷达图与归一化叠加、多指标历史检索 | ✅ 已完成（v0.3.0） |
 
 ## 与设计文档的偏离记录
 
 1. **Python 版本**：文档写 3.12.x，实际环境为 3.14.6（经用户确认沿用）。
    PySide6 6.12 / pandas 3.1 / numpy 2.5 / matplotlib 3.11 / scipy 1.18 均实测兼容。
-2. **虚拟环境位置**：`.venv`、`requirements.txt` 位于 `F:\毕业设计\`（工程根），
-   源码位于 `F:\毕业设计\StockTrendAnalyzer\`（文档 4.2 的 StockTrendAnalyzer 根）。
+2. **虚拟环境位置**：`.venv`、`requirements.txt` 位于仓库根目录，
+   源码位于其下的 `StockTrendAnalyzer\`（文档 4.2 的 StockTrendAnalyzer 根）。
 3. **编码识别**：不引入 `chardet`，改为内置候选编码探测，避免改变技术选型。
 4. **误差类指标归一化**：历史检索计算 RMSE/MAE 前默认先做起始值归一化
    （`SimilarityConfig.normalize`），否则不同价格水平区间的误差不可比。

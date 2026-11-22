@@ -1,10 +1,10 @@
 {
   "app": {
     "name": "特定时间范围内的股票趋势共性分析系统",
-    "version": "0.1.0",
+    "version": "0.3.0",
     "window": {
-      "width": 1280,
-      "height": 820,
+      "width": 1524,
+      "height": 869,
       "remember_geometry": true
     }
   },
@@ -43,9 +43,7 @@
     ],
     "header_scan_rows": 10,
     "restore_recent": true,
-    "recent_files": [
-      "F:\\毕业设计\\StockTrendAnalyzer\\data\\399006.txt"
-    ]
+    "recent_files": []
   },
   "processing": {
     "default_normalization": "none",
@@ -103,5 +101,5 @@
     "initial_bars": 240,
     "theme": "dark"
   },
-  "last_open_dir": "F:\\毕业设计\\StockTrendAnalyzer\\data"
+  "last_open_dir": ""
 }

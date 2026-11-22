@@ -3,8 +3,8 @@
 # 供 PyInstaller 生成 exe 版本信息（右键属性 → 详细信息）。
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 0, 0, 0),
-    prodvers=(1, 0, 0, 0),
+    filevers=(0, 3, 0, 0),
+    prodvers=(0, 3, 0, 0),
     mask=0x3F,
     flags=0x0,
     OS=0x40004,
@@ -20,11 +20,11 @@ VSVersionInfo(
           [
             StringStruct("CompanyName", "毕业设计"),
             StringStruct("FileDescription", "特定时间范围内的股票趋势共性分析系统"),
-            StringStruct("FileVersion", "1.0.0.0"),
+            StringStruct("FileVersion", "0.3.0"),
             StringStruct("InternalName", "StockTrendAnalyzer"),
             StringStruct("OriginalFilename", "StockTrendAnalyzer.exe"),
             StringStruct("ProductName", "特定时间范围内的股票趋势共性分析系统"),
-            StringStruct("ProductVersion", "1.0.0.0"),
+            StringStruct("ProductVersion", "0.3.0"),
           ],
         )
       ]

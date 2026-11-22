@@ -11,7 +11,7 @@ from typing import Final
 
 APP_NAME: Final[str] = "特定时间范围内的股票趋势共性分析系统"
 APP_NAME_SHORT: Final[str] = "股票趋势共性分析系统"
-APP_VERSION: Final[str] = "0.1.0"
+APP_VERSION: Final[str] = "0.3.0"
 
 # ---------------------------------------------------------------------------
 # 行情字段
