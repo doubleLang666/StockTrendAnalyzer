@@ -296,7 +296,7 @@ dist\StockTrendAnalyzer\
 
 ## 与设计文档的偏离记录
 
-1. **Python 版本**：文档写 3.12.x，实际环境为 3.14.6（经用户确认沿用）。
+1. **Python 版本**： 3.14.6。
    PySide6 6.12 / pandas 3.1 / numpy 2.5 / matplotlib 3.11 / scipy 1.18 均实测兼容。
 2. **虚拟环境位置**：`.venv`、`requirements.txt` 位于仓库根目录，
    源码位于其下的 `StockTrendAnalyzer\`（文档 4.2 的 StockTrendAnalyzer 根）。
